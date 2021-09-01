@@ -6,9 +6,9 @@ import ImageList from '@material-ui/core/ImageList'
 import ImageListItem from '@material-ui/core/ImageListItem';
 import Alert from '@material-ui/lab/Alert'
 import { createApi } from 'unsplash-js';
-import { Photos } from 'unsplash-js/dist/methods/search/types/response';
 import { useState } from 'react';
 import { Basic } from 'unsplash-js/dist/methods/photos/types';
+import useDebounceState from './hooks/useDebounceState';
 
 const browserApi = createApi({
   // TODO: use proxy to secure access key
@@ -16,22 +16,6 @@ const browserApi = createApi({
   accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY || '',
 });
 
-
-function useDebounceState<T>(state: T, delay: number) {
-  const [debouncedState, setDebouncedValue] = useState<T>(state);
-
-  React.useEffect(() => {
-      const handler = setTimeout(() => setDebouncedValue(state), delay);
-
-      return () => {
-        clearTimeout(handler);
-      };
-    },
-    [state, delay] 
-  );
-
-  return debouncedState;
-}
 
 const usePhotoFetcher = (query: string) => {
   const abortControllerRef = React.useRef(new AbortController())
