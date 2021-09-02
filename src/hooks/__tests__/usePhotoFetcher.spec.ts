@@ -1,5 +1,5 @@
 import usePhotoFetcher from '../usePhotoFetcher'
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react-hooks'
 import { Basic } from 'unsplash-js/dist/methods/users/types';
 import { ApiResponse } from 'unsplash-js/dist/helpers/response';
 
@@ -13,12 +13,7 @@ type ReducedPhotoApiResponse = Pick<PhotosApiResponse, 'type'  | 'errors'> & {
   }
 }
 
-const photosResponse: ReducedPhotoApiResponse  = {
-  type: 'success',
-  response: { results: [], total_pages: 0 },
-}
 const mockgetPhotos = jest.fn<Promise<ReducedPhotoApiResponse>, never>()
-  .mockReturnValue(Promise.resolve(photosResponse))
 
 jest.mock('unsplash-js', () => {
 	return {
@@ -36,6 +31,23 @@ const testPhotos = [
 const testErrors: NonEmptyArray<string> = ['An internal error has occurred.']
 
 describe('UsePhotoFetcher', () => {
+  beforeEach(() => {
+    mockgetPhotos.mockClear()
+    mockUnsplashSuccessResponse([])
+  })
+
+  it('calls getPhotos api with initial query', async () => {
+    const query = 'first query'
+
+		const { waitForNextUpdate } = renderPhotoFetcher(query)
+    await waitForNextUpdate()
+
+    expect(mockgetPhotos).toHaveBeenCalledWith(
+      expect.objectContaining({ query, page: 1 }),
+      expect.anything()
+    )
+  })
+
 	it('exposes fetched photos with initial query', async () => {
     mockUnsplashSuccessResponse(testPhotos)
 
@@ -77,6 +89,36 @@ describe('UsePhotoFetcher', () => {
 
     expect(result.current.errors).toEqual([])
   })
+
+  it('fetches new photos when pagination change', async () => {
+    const query = 'first query'
+		const { result, waitForNextUpdate } = renderPhotoFetcher(query)
+    await waitForNextUpdate()
+
+    const newPage = 2
+    act(() => {
+      result.current.updatePagination(newPage)
+    })
+    await waitForNextUpdate()
+
+    expect(mockgetPhotos).toHaveBeenCalledWith(
+      expect.objectContaining({ query, page: newPage }),
+      expect.anything()
+    )
+  })
+
+  it('resets pagination to 1 when query changes', async () => {
+		const { result, rerender, waitForNextUpdate } = renderPhotoFetcher('first query')
+    await waitForNextUpdate()
+
+    act(() => {
+      result.current.updatePagination(2)
+    })
+    rerender({ query: 'second query' })
+    await waitForNextUpdate()
+
+    expect(result.current.currentPage).toBe(1)
+  })
 })
 
 function renderPhotoFetcher(initialQuery: string) {
@@ -99,8 +141,6 @@ function mockUnsplashSuccessResponse(results: ReducedPhotoApiResult, totalPages 
 }
 
 function mockUnsplashFailedResponse(errors: NonNullable<PhotosApiResponse['errors']>) {
-  photosResponse.type = 'error'
-  photosResponse.errors = errors
   mockgetPhotos.mockReturnValue(
     Promise.resolve({
       type: 'error',

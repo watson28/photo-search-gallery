@@ -3,34 +3,51 @@ import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
 import useDebounceState from './useDebounceState'
 import { createApi } from 'unsplash-js';
 
-let unsplashApi : ReturnType<typeof createApi>
+let unsplashApi: ReturnType<typeof createApi>
 const getUnsplashApiInstance = () => {
-	if (!unsplashApi) {
-		unsplashApi = createApi({
+  if (!unsplashApi) {
+    unsplashApi = createApi({
       // TODO: use proxy to secure access key
       // apiUrl: 'https://mywebsite.com/unsplash-proxy',
       accessKey: process.env.REACT_APP_UNSPLASH_ACCESS_KEY || '',
-		})
-	}
+    })
+  }
 
   return unsplashApi
 }
 
+function usePrevious<T>(value: T) {
+  const ref = useRef<T>();
+  useEffect(() => {
+    ref.current = value;
+  });
+  return ref.current;
+}
+
+const PAGE_SIZE = 10
+
 const usePhotoFetcher = (query: string) => {
-  const abortControllerRef = useRef(new AbortController())
   const [photos, setPhotos] = useState<Photo[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const debouncedQuery = useDebounceState(query, 500)
-  const PAGE_SIZE = 10
+  const prevDebouncedQuery = usePrevious(debouncedQuery)
 
   useEffect(() => {
-    abortControllerRef.current.abort()
-    abortControllerRef.current = new AbortController()
+    const queryChanged = prevDebouncedQuery !== debouncedQuery
+    if (queryChanged) return setCurrentPage(1)
+  // Disables linting rule because it's not needed to watch for changes in prevDebouncedQuery.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedQuery])
+
+  useEffect(() => {
+    if (!debouncedQuery) return
+
+    const abortController = new AbortController()
     getUnsplashApiInstance().search.getPhotos(
       { query: debouncedQuery, page: currentPage, perPage: PAGE_SIZE },
-      { signal: abortControllerRef.current.signal }
+      { signal: abortController.signal }
     ).then(
       apiResponse => {
         if (apiResponse.type === 'error') {
@@ -44,10 +61,19 @@ const usePhotoFetcher = (query: string) => {
           setTotalPages(apiResponse.response.total_pages)
         }
       }
-    )
+    ).catch(error => {
+      if (error.name === 'AbortError') return
+      setErrors(['An unexpected error has occurred.'])
+    })
+
+    return () => abortController.abort()
   }, [debouncedQuery, currentPage])
 
-  return { photos, errors, totalPages }
+  const updatePagination = (page: number) => {
+    setCurrentPage(Math.min(totalPages, page))
+  }
+
+  return { photos, errors, totalPages, currentPage, updatePagination }
 }
 
 export default usePhotoFetcher
