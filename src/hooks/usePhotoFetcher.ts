@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useCallback } from 'react'
 import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
 import useDebounceState from './useDebounceState'
 import { createApi } from 'unsplash-js';
@@ -71,11 +71,23 @@ const usePhotoFetcher = (query: string) => {
     return () => abortController.abort()
   }, [debouncedQuery, currentPage])
 
-  const updatePagination = (page: number) => {
+  const updatePagination = useCallback((page: number) => {
     setCurrentPage(Math.min(totalPages, page))
-  }
+  }, [totalPages])
 
-  return { photos, errors, totalPages, currentPage, loading, updatePagination }
+  const clearErrors = useCallback(() => {
+    setErrors([])
+  }, [])
+
+  return { 
+    photos,
+    errors,
+    totalPages,
+    currentPage,
+    loading,
+    updatePagination,
+    clearErrors
+  }
 }
 
 export default usePhotoFetcher
