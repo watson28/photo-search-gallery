@@ -31,6 +31,7 @@ const usePhotoFetcher = (query: string) => {
   const [errors, setErrors] = useState<string[]>([])
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
+  const [loading, setLoading] = useState(false)
   const debouncedQuery = useDebounceState(query, 500)
   const prevDebouncedQuery = usePrevious(debouncedQuery)
 
@@ -44,6 +45,7 @@ const usePhotoFetcher = (query: string) => {
   useEffect(() => {
     if (!debouncedQuery) return
 
+    setLoading(true)
     const abortController = new AbortController()
     getUnsplashApiInstance().search.getPhotos(
       { query: debouncedQuery, page: currentPage, perPage: PAGE_SIZE },
@@ -64,7 +66,7 @@ const usePhotoFetcher = (query: string) => {
     ).catch(error => {
       if (error.name === 'AbortError') return
       setErrors(['An unexpected error has occurred.'])
-    })
+    }).finally(() => setLoading(false))
 
     return () => abortController.abort()
   }, [debouncedQuery, currentPage])
@@ -73,7 +75,7 @@ const usePhotoFetcher = (query: string) => {
     setCurrentPage(Math.min(totalPages, page))
   }
 
-  return { photos, errors, totalPages, currentPage, updatePagination }
+  return { photos, errors, totalPages, currentPage, loading, updatePagination }
 }
 
 export default usePhotoFetcher

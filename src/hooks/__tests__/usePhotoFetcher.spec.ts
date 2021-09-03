@@ -119,6 +119,25 @@ describe('UsePhotoFetcher', () => {
 
     expect(result.current.currentPage).toBe(1)
   })
+
+  it('enables loading flag while request in progress', async () => {
+    let resolveQueryResult: (response: ReducedPhotoApiResponse) => void 
+    const promiseResult = new Promise<ReducedPhotoApiResponse>(resolve => (resolveQueryResult = resolve))
+    mockgetPhotos.mockReturnValue(promiseResult)
+
+		const { result, waitForNextUpdate } = renderPhotoFetcher('first query')
+
+    expect(result.current.loading).toBe(true)
+    act(() => {
+      resolveQueryResult({
+        type: 'success',
+        response: { results: [], total_pages: 0 }
+      })
+    })
+    await waitForNextUpdate()
+
+    expect(result.current.loading).toBe(false)
+  })
 })
 
 function renderPhotoFetcher(initialQuery: string) {
