@@ -2,6 +2,8 @@ import ImageList from '@material-ui/core/ImageList'
 import ImageListItem from '@material-ui/core/ImageListItem';
 import Pagination from '@material-ui/lab/Pagination';
 import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
+import ImageListItemBar from '@material-ui/core/ImageListItemBar';
+import Tooltip from '@material-ui/core/Tooltip';
 
 interface PhotoGalleryProps {
   photos: Photo[]
@@ -22,6 +24,14 @@ const PhotoGallery = (props: PhotoGalleryProps) => {
         {props.photos.map(p => (
           <ImageListItem key={p.id} cols={1}>
             <img src={p.urls.thumb} alt={p.alt_description || ''} />
+            <ImageListItemBar
+              title={<span>{p.user.name}</span>}
+              subtitle={(
+                <Tooltip title={p.description || ''} placement="bottom-start">
+                  <span>{p.description || ''}</span>
+                </Tooltip>
+              )}
+            />
           </ImageListItem>
         ))}
       </ImageList>
