@@ -4,6 +4,7 @@ import Pagination from '@material-ui/lab/Pagination';
 import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import Tooltip from '@material-ui/core/Tooltip';
+import { makeStyles, createStyles, Theme } from '@material-ui/core';
 
 interface PhotoGalleryProps {
   photos: Photo[]
@@ -12,7 +13,18 @@ interface PhotoGalleryProps {
   onPageChange(newPage: number): void
 }
 
+const useStyle = makeStyles((theme: Theme) => {
+  return createStyles({
+    pagination: {
+      marginTop: theme.spacing(2),
+      display: 'flex',
+      justifyContent: 'center'
+    },
+  })
+})
+
 const PhotoGallery = (props: PhotoGalleryProps) => {
+  const classes = useStyle()
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
     props.onPageChange(value)
   }
@@ -35,7 +47,13 @@ const PhotoGallery = (props: PhotoGalleryProps) => {
           </ImageListItem>
         ))}
       </ImageList>
-      <Pagination count={props.totalPages} page={props.currentPage} onChange={handlePageChange} />
+      <Pagination
+        className={classes.pagination}
+        color="primary"
+        count={props.totalPages}
+        page={props.currentPage}
+        onChange={handlePageChange}
+      />
     </>
 	)
 }

@@ -24,9 +24,7 @@ function usePrevious<T>(value: T) {
   return ref.current;
 }
 
-const PAGE_SIZE = 10
-
-const usePhotoFetcher = (query: string) => {
+const usePhotoFetcher = (query: string, pageSize: number) => {
   const [photos, setPhotos] = useState<Photo[]>([])
   const [errors, setErrors] = useState<string[]>([])
   const [totalPages, setTotalPages] = useState(0)
@@ -48,7 +46,7 @@ const usePhotoFetcher = (query: string) => {
     setLoading(true)
     const abortController = new AbortController()
     getUnsplashApiInstance().search.getPhotos(
-      { query: debouncedQuery, page: currentPage, perPage: PAGE_SIZE },
+      { query: debouncedQuery, page: currentPage, perPage: pageSize },
       { signal: abortController.signal }
     ).then(
       apiResponse => {
@@ -69,7 +67,7 @@ const usePhotoFetcher = (query: string) => {
     }).finally(() => setLoading(false))
 
     return () => abortController.abort()
-  }, [debouncedQuery, currentPage])
+  }, [debouncedQuery, currentPage, pageSize])
 
   const updatePagination = useCallback((page: number) => {
     setCurrentPage(Math.min(totalPages, page))
