@@ -1,6 +1,6 @@
-import React from 'react';
-import Typography from '@material-ui/core/Typography';
-import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
+import React from 'react'
+import Typography from '@material-ui/core/Typography'
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople'
 
 const NotSearch = () => {
 	return (

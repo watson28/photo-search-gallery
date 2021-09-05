@@ -1,13 +1,13 @@
 import ImageList from '@material-ui/core/ImageList'
-import ImageListItem from '@material-ui/core/ImageListItem';
-import Pagination from '@material-ui/lab/Pagination';
+import ImageListItem from '@material-ui/core/ImageListItem'
+import Pagination from '@material-ui/lab/Pagination'
 import { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types'
-import ImageListItemBar from '@material-ui/core/ImageListItemBar';
-import Typography from '@material-ui/core/Typography';
-import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles, createStyles, Theme } from '@material-ui/core';
-import { useCallback } from 'react';
+import ImageListItemBar from '@material-ui/core/ImageListItemBar'
+import Typography from '@material-ui/core/Typography'
+import SentimentVeryDissatisfiedIcon from '@material-ui/icons/SentimentVeryDissatisfied'
+import Tooltip from '@material-ui/core/Tooltip'
+import { makeStyles, createStyles, Theme } from '@material-ui/core'
+import { useCallback } from 'react'
 
 export type Photo = Pick<UnsplashPhoto, 'id' | 'alt_description' | 'description'>
   & { user: Pick<UnsplashPhoto['user'], 'name'> }

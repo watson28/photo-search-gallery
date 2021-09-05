@@ -1,4 +1,4 @@
-import Snackbar  from '@material-ui/core/Snackbar';
+import Snackbar  from '@material-ui/core/Snackbar'
 import Alert from '@material-ui/lab/Alert'
 
 interface NotificationErrorsProps {
@@ -8,7 +8,7 @@ interface NotificationErrorsProps {
 
 const NotificationErrors = (props: NotificationErrorsProps) => {
   const handleClose = (event?: React.SyntheticEvent, reason?: string) => {
-    if (reason === 'clickaway') return;
+    if (reason === 'clickaway') return
     if (props.onClose) props.onClose()
   }
 

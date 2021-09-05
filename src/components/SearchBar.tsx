@@ -1,8 +1,8 @@
-import TextField from '@material-ui/core/TextField';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import ImageSearchIcon from '@material-ui/icons/ImageSearch';
-import { makeStyles, createStyles, Theme } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField'
+import InputAdornment from '@material-ui/core/InputAdornment'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import ImageSearchIcon from '@material-ui/icons/ImageSearch'
+import { makeStyles, createStyles, Theme } from '@material-ui/core'
 
 interface SearchBarProps {
   className?: string

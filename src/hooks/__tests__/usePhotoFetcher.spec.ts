@@ -1,7 +1,7 @@
 import usePhotoFetcher from '../usePhotoFetcher'
 import { renderHook, act } from '@testing-library/react-hooks'
-import { Basic } from 'unsplash-js/dist/methods/users/types';
-import { ApiResponse } from 'unsplash-js/dist/helpers/response';
+import { Basic } from 'unsplash-js/dist/methods/users/types'
+import { ApiResponse } from 'unsplash-js/dist/helpers/response'
 
 type NonEmptyArray<T> = [T, ...T[]];
 type ReducedPhotoApiResult = Pick<Basic, 'id' | 'name'>[]

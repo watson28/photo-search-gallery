@@ -1,8 +1,8 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
-import { createApi } from 'unsplash-js';
-import { ApiResponse } from 'unsplash-js/dist/helpers/response';
-import { Photos } from 'unsplash-js/dist/methods/search/types/response';
+import { createApi } from 'unsplash-js'
+import { ApiResponse } from 'unsplash-js/dist/helpers/response'
+import { Photos } from 'unsplash-js/dist/methods/search/types/response'
 
 let unsplashApi: ReturnType<typeof createApi>
 const getUnsplashApiInstance = () => {
@@ -18,11 +18,11 @@ const getUnsplashApiInstance = () => {
 }
 
 function usePrevious<T>(value: T) {
-  const ref = useRef<T>();
+  const ref = useRef<T>()
   useEffect(() => {
-    ref.current = value;
-  });
-  return ref.current;
+    ref.current = value
+  })
+  return ref.current
 }
 
 const usePhotoFetcher = (query: string, pageSize: number) => {

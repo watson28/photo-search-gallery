@@ -1,12 +1,12 @@
-import React from 'react';
+import React from 'react'
 import Container from '@material-ui/core/Container'
-import usePhotoFetcher from './hooks/usePhotoFetcher';
-import useDebounceState from './hooks/useDebounceState';
-import SearchBar from './components/SearchBar';
-import PhotoGallery from './components/PhotoGallery';
-import NotificationErrors from './components/NotificationErrors';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import NotSearch from './components/NotSearch';
+import usePhotoFetcher from './hooks/usePhotoFetcher'
+import useDebounceState from './hooks/useDebounceState'
+import SearchBar from './components/SearchBar'
+import PhotoGallery from './components/PhotoGallery'
+import NotificationErrors from './components/NotificationErrors'
+import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
+import NotSearch from './components/NotSearch'
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -22,7 +22,7 @@ const PAGE_SIZE = 20
 const QUERY_DEBOUNCE_DELAY_MS = 500
 
 function App() {
-  const classes = useStyles();
+  const classes = useStyles()
   const [query, setQuery] = React.useState<string>('')
   const debouncedQuery = useDebounceState(query, QUERY_DEBOUNCE_DELAY_MS)
   const {
@@ -56,7 +56,7 @@ function App() {
         </Container>
       </div>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App

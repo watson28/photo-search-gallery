@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 
 describe('UseDebounceState', () => {
   beforeEach(() => {
-    jest.useFakeTimers();
+    jest.useFakeTimers()
   })
   afterEach(() => {
     jest.clearAllTimers()

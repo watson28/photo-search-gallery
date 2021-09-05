@@ -9,7 +9,7 @@ export default function useDebounceState<T>(state: T, delay: number) {
       return () => clearTimeout(handler)
     },
     [state, delay] 
-  );
+  )
 
-  return debouncedState;
+  return debouncedState
 }

@@ -1,5 +1,5 @@
-import React from 'react';
-import { render, screen, within, fireEvent } from '@testing-library/react';
+import React from 'react'
+import { render, screen, within, fireEvent } from '@testing-library/react'
 import { default as PhotoGallery, Photo } from '../PhotoGallery'
 import faker from 'faker'
 

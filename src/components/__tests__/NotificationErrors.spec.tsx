@@ -1,6 +1,6 @@
-import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import NotificationErros from '../NotificationErrors';
+import React from 'react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import NotificationErros from '../NotificationErrors'
 
 describe('NotificationErros component', () => {
   const errors = [
