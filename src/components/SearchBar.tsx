@@ -3,16 +3,16 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 interface SearchBarProps {
-  className: string
-  query: string
-  onChange(query: string): void
-  loading: boolean
+  className?: string
+  query?: string
+  onChange?(query: string): void
+  loading?: boolean
 }
 
 const SearchBar = (props: SearchBarProps) => {
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
-    props.onChange(event.target.value)
+    if (props.onChange) props.onChange(event.target.value)
   }
 
 	return (
@@ -23,6 +23,7 @@ const SearchBar = (props: SearchBarProps) => {
       onSubmit={event => event.preventDefault()}
     >
       <TextField
+      id="search-bar-text-field"
       label="Search for images"
       variant="outlined"
       fullWidth value={props.query}

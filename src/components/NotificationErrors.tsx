@@ -13,7 +13,7 @@ const NotificationErrors = (props: NotificationErrorsProps) => {
   }
 
 	return (
-    <Snackbar open={Boolean(props.errors.length)} autoHideDuration={6000} onClose={handleClose}>
+    <Snackbar open={Boolean(props.errors.length)} onClose={handleClose}>
       <Alert onClose={handleClose} severity="error">
         <ul>
           {props.errors.map(error => (<li key={error}>{error}</li>))}

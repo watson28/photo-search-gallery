@@ -1,16 +1,20 @@
 import ImageList from '@material-ui/core/ImageList'
 import ImageListItem from '@material-ui/core/ImageListItem';
 import Pagination from '@material-ui/lab/Pagination';
-import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
+import { Basic as UnsplashPhoto } from 'unsplash-js/dist/methods/photos/types'
 import ImageListItemBar from '@material-ui/core/ImageListItemBar';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles, createStyles, Theme } from '@material-ui/core';
 
-interface PhotoGalleryProps {
+export type Photo = Pick<UnsplashPhoto, 'id' | 'alt_description' | 'description'>
+  & { user: Pick<UnsplashPhoto['user'], 'name'> }
+  & { urls: Pick<UnsplashPhoto['urls'], 'thumb'> }
+
+export interface PhotoGalleryProps {
   photos: Photo[]
   currentPage: number
   totalPages: number
-  onPageChange(newPage: number): void
+  onPageChange?(newPage: number): void
 }
 
 const useStyle = makeStyles((theme: Theme) => {
@@ -26,7 +30,7 @@ const useStyle = makeStyles((theme: Theme) => {
 const PhotoGallery = (props: PhotoGalleryProps) => {
   const classes = useStyle()
   const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    props.onPageChange(value)
+    if (props.onPageChange) props.onPageChange(value)
   }
 
   if (props.photos.length === 0) return null
@@ -34,7 +38,7 @@ const PhotoGallery = (props: PhotoGalleryProps) => {
     <>
       <ImageList rowHeight={200} cols={5}>
         {props.photos.map(p => (
-          <ImageListItem key={p.id} cols={1}>
+          <ImageListItem key={p.id} cols={1} data-testid="image-list-photo">
             <img src={p.urls.thumb} alt={p.alt_description || ''} />
             <ImageListItemBar
               title={<span>{p.user.name}</span>}
@@ -53,6 +57,7 @@ const PhotoGallery = (props: PhotoGalleryProps) => {
         count={props.totalPages}
         page={props.currentPage}
         onChange={handlePageChange}
+        data-testid="photo-gallery--pagination"
       />
     </>
 	)
