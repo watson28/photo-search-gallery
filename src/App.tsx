@@ -1,6 +1,7 @@
 import React from 'react';
 import Container from '@material-ui/core/Container'
 import usePhotoFetcher from './hooks/usePhotoFetcher';
+import useDebounceState from './hooks/useDebounceState';
 import SearchBar from './components/SearchBar';
 import PhotoGallery from './components/PhotoGallery';
 import NotificationErrors from './components/NotificationErrors';
@@ -16,11 +17,13 @@ const useStyles = makeStyles((theme: Theme) => {
     }
   })
 })
-const pageSize = 20
+const PAGE_SIZE = 20
+const QUERY_DEBOUNCE_DELAY_MS = 500
 
 function App() {
   const classes = useStyles();
   const [query, setQuery] = React.useState<string>('')
+  const debouncedQuery = useDebounceState(query, QUERY_DEBOUNCE_DELAY_MS)
   const {
     photos,
     errors,
@@ -29,7 +32,7 @@ function App() {
     loading,
     updatePagination,
     clearErrors
-  } = usePhotoFetcher(query, pageSize)
+  } = usePhotoFetcher(debouncedQuery, PAGE_SIZE)
 
   return (
     <div className={classes.root}>

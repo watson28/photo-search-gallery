@@ -22,7 +22,6 @@ jest.mock('unsplash-js', () => {
     })
 	}
 })
-jest.mock('../useDebounceState', () => ({ __esModule: true, default: (value: unknown) => value }))
 
 const testPhotos = [
   { id: 'abc123', name: 'first.png'},
@@ -142,7 +141,7 @@ describe('UsePhotoFetcher', () => {
 
 function renderPhotoFetcher(initialQuery: string) {
   return renderHook(
-    ({ query }) => usePhotoFetcher(query),
+    ({ query }) => usePhotoFetcher(query, 10),
     { initialProps: { query: initialQuery }}
   )
 }

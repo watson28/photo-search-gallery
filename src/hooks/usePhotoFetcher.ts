@@ -1,6 +1,5 @@
 import { useRef, useState, useEffect, useCallback } from 'react'
 import { Basic as Photo } from 'unsplash-js/dist/methods/photos/types'
-import useDebounceState from './useDebounceState'
 import { createApi } from 'unsplash-js';
 import { ApiResponse } from 'unsplash-js/dist/helpers/response';
 import { Photos } from 'unsplash-js/dist/methods/search/types/response';
@@ -32,8 +31,7 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
   const [totalPages, setTotalPages] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(false)
-  const debouncedQuery = useDebounceState(query, 500)
-  const prevDebouncedQuery = usePrevious(debouncedQuery)
+  const prevQuery = usePrevious(query)
 
 
   const handleApiResponse = useCallback((apiResponse: ApiResponse<Photos>) => {
@@ -63,19 +61,19 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
 
 
   useEffect(() => {
-    const queryChanged = prevDebouncedQuery !== debouncedQuery
+    const queryChanged = prevQuery !== query
     if (queryChanged) return setCurrentPage(1)
   // Disables linting rule because it's not needed to watch for changes in prevDebouncedQuery.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [debouncedQuery])
+  }, [query])
 
   useEffect(() => {
-    if (!debouncedQuery) return
+    if (!query) return
 
     setLoading(true)
     const abortController = new AbortController()
     getUnsplashApiInstance().search.getPhotos(
-      { query: debouncedQuery, page: currentPage, perPage: pageSize },
+      { query , page: currentPage, perPage: pageSize },
       { signal: abortController.signal }
     )
     .then(handleApiResponse)
@@ -83,7 +81,7 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
     .finally(() => setLoading(false))
 
     return () => abortController.abort()
-  }, [debouncedQuery, currentPage, pageSize, handleApiResponse, handleApiError])
+  }, [query, currentPage, pageSize, handleApiResponse, handleApiError])
 
 
   return { 
