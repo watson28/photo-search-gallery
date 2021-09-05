@@ -6,6 +6,7 @@ import SearchBar from './components/SearchBar';
 import PhotoGallery from './components/PhotoGallery';
 import NotificationErrors from './components/NotificationErrors';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import NotSearch from './components/NotSearch';
 
 const useStyles = makeStyles((theme: Theme) => {
   return createStyles({
@@ -30,6 +31,7 @@ function App() {
     currentPage,
     totalPages,
     loading,
+    executedQuery,
     updatePagination,
     clearErrors
   } = usePhotoFetcher(debouncedQuery, PAGE_SIZE)
@@ -40,12 +42,17 @@ function App() {
         <Container>
           <NotificationErrors errors={errors} onClose={clearErrors} />
           <SearchBar className={classes.searchBar} query={query} onChange={setQuery} loading={loading} />
-          <PhotoGallery 
-            photos={photos}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={updatePagination} 
-          />
+          {(!executedQuery)
+            ? <NotSearch />
+            : (
+              <PhotoGallery 
+                photos={photos}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={updatePagination} 
+              />
+            )
+          }
         </Container>
       </div>
     </div>

@@ -32,9 +32,11 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [loading, setLoading] = useState(false)
   const prevQuery = usePrevious(query)
+  const [executedQuery, setExecutedQuery] = useState<string>()
 
 
   const handleApiResponse = useCallback((apiResponse: ApiResponse<Photos>) => {
+    setExecutedQuery(query)
     if (apiResponse.type === 'error') {
       setErrors(apiResponse.errors)
       setPhotos([])
@@ -44,7 +46,7 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
       setPhotos(apiResponse.response.results)
       setTotalPages(apiResponse.response.total_pages)
     }
-  }, [])
+  }, [query])
 
   const handleApiError = useCallback((error: Error) => {
       if (error.name === 'AbortError') return
@@ -68,8 +70,6 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
   }, [query])
 
   useEffect(() => {
-    if (!query) return
-
     setLoading(true)
     const abortController = new AbortController()
     getUnsplashApiInstance().search.getPhotos(
@@ -90,6 +90,7 @@ const usePhotoFetcher = (query: string, pageSize: number) => {
     totalPages,
     currentPage,
     loading,
+    executedQuery,
     updatePagination,
     clearErrors
   }
