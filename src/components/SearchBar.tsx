@@ -3,6 +3,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import ImageSearchIcon from '@material-ui/icons/ImageSearch'
 import { makeStyles, createStyles, Theme } from '@material-ui/core'
+import { useCallback } from 'react'
 
 interface SearchBarProps {
   className?: string
@@ -24,16 +25,16 @@ const useStyle = makeStyles((theme: Theme) => {
   })
 })
 
-const SearchBar = (props: SearchBarProps) => {
+const SearchBar = ({ className, query, onChange, loading }: SearchBarProps) => {
   const classes = useStyle()
-  const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleQueryChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
-    if (props.onChange) props.onChange(event.target.value)
-  }
+    if (onChange) onChange(event.target.value)
+  }, [onChange])
 
 	return (
     <form
-      className={props.className}
+      className={className}
       noValidate
       autoComplete="off"
       onSubmit={event => event.preventDefault()}
@@ -42,14 +43,14 @@ const SearchBar = (props: SearchBarProps) => {
       id="search-bar-text-field"
       label="Search for images"
       variant="outlined"
-      fullWidth value={props.query}
+      fullWidth value={query}
       onChange={handleQueryChange}
       InputProps={{
         startAdornment: (
         <InputAdornment position="start">
           <div className={classes.loadingWrapper}>
             <ImageSearchIcon />
-            { props.loading && <CircularProgress className={classes.progress} size={32} thickness={2} />}
+            { loading && <CircularProgress className={classes.progress} size={32} thickness={2} />}
           </div>
         </InputAdornment>
       )}}
