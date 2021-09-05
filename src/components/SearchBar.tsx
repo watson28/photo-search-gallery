@@ -1,6 +1,8 @@
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import ImageSearchIcon from '@material-ui/icons/ImageSearch';
+import { makeStyles, createStyles, Theme } from '@material-ui/core';
 
 interface SearchBarProps {
   className?: string
@@ -9,7 +11,21 @@ interface SearchBarProps {
   loading?: boolean
 }
 
+const useStyle = makeStyles((theme: Theme) => {
+  return createStyles({
+    loadingWrapper: {
+      position: 'relative'
+    },
+    progress: {
+      position: 'absolute',
+      top: -4,
+      left: -5
+    }
+  })
+})
+
 const SearchBar = (props: SearchBarProps) => {
+  const classes = useStyle()
   const handleQueryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     if (props.onChange) props.onChange(event.target.value)
@@ -31,11 +47,10 @@ const SearchBar = (props: SearchBarProps) => {
       InputProps={{
         startAdornment: (
         <InputAdornment position="start">
-          <CircularProgress
-            size={20}
-            variant={props.loading ? undefined : 'determinate'}
-            value={props.loading ? undefined : 100}
-          />
+          <div className={classes.loadingWrapper}>
+            <ImageSearchIcon />
+            { props.loading && <CircularProgress className={classes.progress} size={32} thickness={2} />}
+          </div>
         </InputAdornment>
       )}}
     />
